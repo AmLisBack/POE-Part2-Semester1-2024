@@ -49,11 +49,13 @@ public class GameManager : MonoBehaviour
     public void ButtonClicked(int row, int col)
     {
         Debug.Log("Button Clicked at row:" + row + ", " + col);
+        buttons[row, col].interactable = false;
         if (p1Turn)
         {
             buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "X";
             p1Turn = false;
             p2Turn = true;
+            return;
         }
         if(p2Turn)
         {
@@ -61,7 +63,7 @@ public class GameManager : MonoBehaviour
             p2Turn = false;
             p1Turn=true;
         }
-        buttons[row,col].interactable = false;  
+         
         
     }
     public void DisplayPlayersTurn()
@@ -74,5 +76,54 @@ public class GameManager : MonoBehaviour
         {
             currentPlayersTurn.text = "Player O Turn";
         }
+    }
+    private bool ReadBoard()
+    {
+        {
+            //check horizontal lines
+            for (int row = 0; row < 4; row++)
+            {
+                if (buttons[row, 0].GetComponentInChildren<TextMeshProUGUI>().text == buttons[row, 1].GetComponentInChildren<TextMeshProUGUI>().text &&
+                    buttons[row, 1].GetComponentInChildren<TextMeshProUGUI>().text == buttons[row, 2].GetComponentInChildren<TextMeshProUGUI>().text &&
+                    buttons[row, 2].GetComponentInChildren<TextMeshProUGUI>().text == buttons[row, 3].GetComponentInChildren<TextMeshProUGUI>().text &&
+                    buttons[row, 0].GetComponentInChildren<TextMeshProUGUI>().text != "")
+                {
+                    return true;
+                }
+            }
+
+            //check vertical lines
+            for (int col = 0; col < 4; col++)
+            {
+                if (buttons[0, col].GetComponentInChildren<TextMeshProUGUI>().text == buttons[1, col].GetComponentInChildren<TextMeshProUGUI>().text &&
+                    buttons[1, col].GetComponentInChildren<TextMeshProUGUI>().text == buttons[2, col].GetComponentInChildren<TextMeshProUGUI>().text &&
+                    buttons[2, col].GetComponentInChildren<TextMeshProUGUI>().text == buttons[3, col].GetComponentInChildren<TextMeshProUGUI>().text &&
+                    buttons[0, col].GetComponentInChildren<TextMeshProUGUI>().text != "")
+                {
+                    return true;
+                }
+            }
+
+            //top-left to bottom-right
+            if (buttons[0, 0].GetComponentInChildren<TextMeshProUGUI>().text == buttons[1, 1].GetComponentInChildren<TextMeshProUGUI>().text &&
+                buttons[1, 1].GetComponentInChildren<TextMeshProUGUI>().text == buttons[2, 2].GetComponentInChildren<TextMeshProUGUI>().text &&
+                buttons[2, 2].GetComponentInChildren<TextMeshProUGUI>().text == buttons[3, 3].GetComponentInChildren<TextMeshProUGUI>().text &&
+                buttons[0, 0].GetComponentInChildren<TextMeshProUGUI>().text != "")
+            {
+                return true;
+            }
+
+            //top-right to bottom-left
+            if (buttons[0, 3].GetComponentInChildren<TextMeshProUGUI>().text == buttons[1, 2].GetComponentInChildren<TextMeshProUGUI>().text &&
+                buttons[1, 2].GetComponentInChildren<TextMeshProUGUI>().text == buttons[2, 1].GetComponentInChildren<TextMeshProUGUI>().text &&
+                buttons[2, 1].GetComponentInChildren<TextMeshProUGUI>().text == buttons[3, 0].GetComponentInChildren<TextMeshProUGUI>().text &&
+                buttons[0, 3].GetComponentInChildren<TextMeshProUGUI>().text != "")
+            {
+                return true;
+            }
+
+            return false;
+        }
+
     }
 }
