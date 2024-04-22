@@ -2541,8 +2541,8 @@ MonoBehaviour:
   p2Turn: 0
   currentPlayersTurn: {fileID: 2119883846}
   clickCount: 0
-  powerUp1: {fileID: 1383141882}
-  powerUp2: {fileID: 1946288253}
+  powerUp1: {fileID: 1383141884}
+  powerUp2: {fileID: 1946288255}
 --- !u!1 &1003145035
 GameObject:
   m_ObjectHideFlags: 0

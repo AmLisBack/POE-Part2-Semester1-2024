@@ -63,6 +63,16 @@ public class GameManager : MonoBehaviour
 
         }
 
+        if (powerUp2.GetComponentInChildren<TextMeshProUGUI>().text == "Player O: Replace")
+        {
+            powerUp2.onClick.AddListener(Replace);
+
+        }
+        else if(powerUp2.GetComponentInChildren<TextMeshProUGUI>().text == "Player O: Skip Turn")
+        {
+            powerUp2.onClick.AddListener(Skip);
+        }
+
         int randomStart = Random.Range(0, 2);
         if(randomStart == 0 )
         {
@@ -124,7 +134,7 @@ public class GameManager : MonoBehaviour
         buttons[row, col].interactable = false;
         if (p1Turn)
         {
-            if(isReplaceClicked)
+            if (isReplaceClicked)
             {
                 buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "X";
                 isReplaceClicked = false;
@@ -139,15 +149,28 @@ public class GameManager : MonoBehaviour
                 p1Turn = false;
                 p2Turn = true;
             }
-            
+
 
             return;
         }
         if(p2Turn)
         {
-            buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "O";
-            p2Turn = false;
-            p1Turn=true;
+            if (isReplaceClicked)
+            {
+                buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "O";
+                isReplaceClicked = false;
+                powerUp2.interactable = false;
+                p2Turn = false;
+                p1Turn = true;
+                interactable();
+            }
+            else
+            {
+                buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "O";
+                p2Turn = false;
+                p1Turn = true;
+
+            }
 
         }
 
@@ -254,17 +277,7 @@ public class GameManager : MonoBehaviour
     private void Skip()
     {
         isSkipClicked = true;
-        Debug.Log("is Skip clicked: " + isSkipClicked);
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-
-                buttons[i, j].interactable = true;
-                //Debug.Log("Button Name:"+buttons[row,col].name+$"| At Location {row}, {col}");
-
-            }
-        }
+        
 
     }
 
