@@ -11,15 +11,42 @@ public class GameManager : MonoBehaviour
     public bool p2Turn = false; //O
     public TextMeshProUGUI currentPlayersTurn;//Text at top of screen to display whos turn it is
     public int clickCount;
-    public GameObject powerUp1;
-    public GameObject powerUp2;
+    public Button powerUp1;
+    public Button powerUp2;
+    private bool isRemoveClicked = false;
+    private bool isSkipClicked = false;
+   // private bool powerUp1Clicked = false;
+   // private bool powerUp2Clicked = false;
+    
 
     // Start is called before the first frame update
     void Start()
     {
-        powerUp1.SetActive(false);
-        powerUp2.SetActive(false);
+        powerUp1.gameObject.SetActive(false);
+        powerUp2.gameObject.SetActive(false);
 
+        int rdPowerUp1 = Random.Range(0, 2);
+        if (rdPowerUp1 == 0)
+        {
+            powerUp1.GetComponentInChildren<TextMeshProUGUI>().text = "Remove";
+
+        }
+        else if (rdPowerUp1 == 1)
+        {
+            powerUp1.GetComponentInChildren<TextMeshProUGUI>().text = "Skip Turn";
+
+        }
+        int rdPowerUp2 = Random.Range(0, 2);
+        if (rdPowerUp2 == 0)
+        {
+            powerUp2.GetComponentInChildren<TextMeshProUGUI>().text = "Remove";
+
+        }
+        else if (rdPowerUp2 == 1)
+        {
+            powerUp2.GetComponentInChildren<TextMeshProUGUI>().text = "Skip Turn";
+
+        }
 
         int randomStart = Random.Range(0, 2);
         if(randomStart == 0 )
@@ -72,11 +99,20 @@ public class GameManager : MonoBehaviour
 
         if (clickCount == 2)
         {
-           powerUp1.SetActive(true);
-           powerUp2.SetActive(true);
+           powerUp1.gameObject.SetActive(true);
+           powerUp2.gameObject.SetActive(true);
         }
-
         
+        if (powerUp1.GetComponentInChildren<TextMeshProUGUI>().text == "Remove")
+        {
+            powerUp1.onClick.AddListener(Remove);
+
+
+        }else if (powerUp1.GetComponentInChildren<TextMeshProUGUI>().text == "Skip Turn")
+        {
+            powerUp1.onClick.AddListener(Skip);
+
+        }
 
         Debug.Log("Button Clicked at row:" + row + ", " + col);
         buttons[row, col].interactable = false;
@@ -163,6 +199,19 @@ public class GameManager : MonoBehaviour
 
             return " ";
         }
+
+    }
+
+    private void Remove()
+    {
+        isRemoveClicked = true;
+        Debug.Log("is remove clicked: " + isRemoveClicked);
+
+    }
+    private void Skip()
+    {
+        isSkipClicked = true;
+        Debug.Log("is Skip clicked: " + isSkipClicked);
 
     }
 }
