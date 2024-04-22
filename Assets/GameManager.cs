@@ -22,9 +22,11 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //buttons made inactive so that they are only visible when each player has made their first move
         powerUp1.gameObject.SetActive(false);
         powerUp2.gameObject.SetActive(false);
 
+        //the 2 power up buttons' text are randomly changed to either Remove or Skip Turn
         int rdPowerUp1 = Random.Range(0, 2);
         if (rdPowerUp1 == 0)
         {
@@ -45,6 +47,19 @@ public class GameManager : MonoBehaviour
         else if (rdPowerUp2 == 1)
         {
             powerUp2.GetComponentInChildren<TextMeshProUGUI>().text = "Skip Turn";
+
+        }
+
+        //check if power ups are clicked
+        if (powerUp1.GetComponentInChildren<TextMeshProUGUI>().text == "Remove")
+        {
+            powerUp1.onClick.AddListener(Remove);
+
+
+        }
+        else if (powerUp1.GetComponentInChildren<TextMeshProUGUI>().text == "Skip Turn")
+        {
+            powerUp1.onClick.AddListener(Skip);
 
         }
 
@@ -97,22 +112,14 @@ public class GameManager : MonoBehaviour
         clickCount++;
         Debug.Log("clickCount count: " + clickCount);
 
+        //when count = 2, buttons are made active
         if (clickCount == 2)
         {
            powerUp1.gameObject.SetActive(true);
            powerUp2.gameObject.SetActive(true);
         }
         
-        if (powerUp1.GetComponentInChildren<TextMeshProUGUI>().text == "Remove")
-        {
-            powerUp1.onClick.AddListener(Remove);
-
-
-        }else if (powerUp1.GetComponentInChildren<TextMeshProUGUI>().text == "Skip Turn")
-        {
-            powerUp1.onClick.AddListener(Skip);
-
-        }
+       
 
         Debug.Log("Button Clicked at row:" + row + ", " + col);
         buttons[row, col].interactable = false;
