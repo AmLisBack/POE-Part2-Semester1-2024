@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public bool p1Turn = false; //X
     public bool p2Turn = false; //O
     public TextMeshProUGUI currentPlayersTurn;//Text at top of screen to display whos turn it is
+    public int clickCount;
 
     // Start is called before the first frame update
     void Start()
@@ -43,7 +44,20 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        string winner;
+        winner = ReadBoard();
         DisplayPlayersTurn();
+        if (winner == "X")
+        {
+            currentPlayersTurn.text = "Player X won";
+        }
+        else if(winner == "O"){
+            currentPlayersTurn.text = "Player O won";
+        }
+        else if (winner == " ")
+        {
+            currentPlayersTurn.text = " ";
+        }
     }
 
     public void ButtonClicked(int row, int col)
@@ -77,9 +91,10 @@ public class GameManager : MonoBehaviour
             currentPlayersTurn.text = "Player O Turn";
         }
     }
-    private bool ReadBoard()
+    private string ReadBoard()
     {
         {
+            string winner;
             //check horizontal lines
             for (int row = 0; row < 4; row++)
             {
@@ -88,7 +103,9 @@ public class GameManager : MonoBehaviour
                     buttons[row, 2].GetComponentInChildren<TextMeshProUGUI>().text == buttons[row, 3].GetComponentInChildren<TextMeshProUGUI>().text &&
                     buttons[row, 0].GetComponentInChildren<TextMeshProUGUI>().text != "")
                 {
-                    return true;
+                    winner = buttons[row,0].GetComponentInChildren<TextMeshProUGUI>().text;
+
+                    return winner;
                 }
             }
 
@@ -100,7 +117,8 @@ public class GameManager : MonoBehaviour
                     buttons[2, col].GetComponentInChildren<TextMeshProUGUI>().text == buttons[3, col].GetComponentInChildren<TextMeshProUGUI>().text &&
                     buttons[0, col].GetComponentInChildren<TextMeshProUGUI>().text != "")
                 {
-                    return true;
+                    winner = buttons[0, col].GetComponentInChildren<TextMeshProUGUI>().text;
+                    return winner;
                 }
             }
 
@@ -110,7 +128,8 @@ public class GameManager : MonoBehaviour
                 buttons[2, 2].GetComponentInChildren<TextMeshProUGUI>().text == buttons[3, 3].GetComponentInChildren<TextMeshProUGUI>().text &&
                 buttons[0, 0].GetComponentInChildren<TextMeshProUGUI>().text != "")
             {
-                return true;
+                winner = buttons[0, 0].GetComponentInChildren<TextMeshProUGUI>().text;
+                return winner;
             }
 
             //top-right to bottom-left
@@ -119,10 +138,11 @@ public class GameManager : MonoBehaviour
                 buttons[2, 1].GetComponentInChildren<TextMeshProUGUI>().text == buttons[3, 0].GetComponentInChildren<TextMeshProUGUI>().text &&
                 buttons[0, 3].GetComponentInChildren<TextMeshProUGUI>().text != "")
             {
-                return true;
+                winner = buttons[0, 3].GetComponentInChildren<TextMeshProUGUI>().text;
+                return winner;
             }
 
-            return false;
+            return " ";
         }
 
     }
