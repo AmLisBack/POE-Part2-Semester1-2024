@@ -54,10 +54,7 @@ public class GameManager : MonoBehaviour
         else if(winner == "O"){
             currentPlayersTurn.text = "Player O won";
         }
-        else if (winner == " ")
-        {
-            currentPlayersTurn.text = " ";
-        }
+        
     }
 
     public void ButtonClicked(int row, int col)
