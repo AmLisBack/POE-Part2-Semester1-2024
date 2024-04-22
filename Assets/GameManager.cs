@@ -11,11 +11,16 @@ public class GameManager : MonoBehaviour
     public bool p2Turn = false; //O
     public TextMeshProUGUI currentPlayersTurn;//Text at top of screen to display whos turn it is
     public int clickCount;
+    public GameObject powerUp1;
+    public GameObject powerUp2;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        powerUp1.SetActive(false);
+        powerUp2.SetActive(false);
+
+
         int randomStart = Random.Range(0, 2);
         if(randomStart == 0 )
         {
@@ -38,6 +43,7 @@ public class GameManager : MonoBehaviour
                 
             }
         }
+       
         DisplayPlayersTurn();
     }
 
@@ -54,11 +60,24 @@ public class GameManager : MonoBehaviour
         else if(winner == "O"){
             currentPlayersTurn.text = "Player O won";
         }
+
+
         
     }
 
     public void ButtonClicked(int row, int col)
     {
+        clickCount++;
+        Debug.Log("clickCount count: " + clickCount);
+
+        if (clickCount == 2)
+        {
+           powerUp1.SetActive(true);
+           powerUp2.SetActive(true);
+        }
+
+        
+
         Debug.Log("Button Clicked at row:" + row + ", " + col);
         buttons[row, col].interactable = false;
         if (p1Turn)
@@ -66,6 +85,7 @@ public class GameManager : MonoBehaviour
             buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "X";
             p1Turn = false;
             p2Turn = true;
+
             return;
         }
         if(p2Turn)
@@ -73,8 +93,10 @@ public class GameManager : MonoBehaviour
             buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "O";
             p2Turn = false;
             p1Turn=true;
+
         }
-         
+
+        
         
     }
     public void DisplayPlayersTurn()
