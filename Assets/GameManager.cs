@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     public int clickCount;
     public Button powerUp1;
     public Button powerUp2;
-    private bool isRemoveClicked = false;
+    private bool isReplaceClicked = false;
     private bool isSkipClicked = false;
    // private bool powerUp1Clicked = false;
    // private bool powerUp2Clicked = false;
@@ -124,10 +124,10 @@ public class GameManager : MonoBehaviour
         buttons[row, col].interactable = false;
         if (p1Turn)
         {
-            if(isRemoveClicked)
+            if(isReplaceClicked)
             {
                 buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "X";
-                isRemoveClicked = false;
+                isReplaceClicked = false;
                 powerUp1.interactable = false;
                 p1Turn = false;
                 p2Turn = true;
@@ -234,8 +234,8 @@ public class GameManager : MonoBehaviour
 
     private void Replace()
     {
-        isRemoveClicked = true;
-        Debug.Log("is replace clicked: " + isRemoveClicked);
+        isReplaceClicked = true;
+        Debug.Log("is replace clicked: " + isReplaceClicked);
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
