@@ -30,34 +30,34 @@ public class GameManager : MonoBehaviour
         int rdPowerUp1 = Random.Range(0, 2);
         if (rdPowerUp1 == 0)
         {
-            powerUp1.GetComponentInChildren<TextMeshProUGUI>().text = "Remove";
+            powerUp1.GetComponentInChildren<TextMeshProUGUI>().text = "Player X: Remove";
 
         }
         else if (rdPowerUp1 == 1)
         {
-            powerUp1.GetComponentInChildren<TextMeshProUGUI>().text = "Skip Turn";
+            powerUp1.GetComponentInChildren<TextMeshProUGUI>().text = "Player X: Skip Turn";
 
         }
         int rdPowerUp2 = Random.Range(0, 2);
         if (rdPowerUp2 == 0)
         {
-            powerUp2.GetComponentInChildren<TextMeshProUGUI>().text = "Remove";
+            powerUp2.GetComponentInChildren<TextMeshProUGUI>().text = "Player O: Remove";
 
         }
         else if (rdPowerUp2 == 1)
         {
-            powerUp2.GetComponentInChildren<TextMeshProUGUI>().text = "Skip Turn";
+            powerUp2.GetComponentInChildren<TextMeshProUGUI>().text = "Player O: Skip Turn";
 
         }
 
         //check if power ups are clicked
-        if (powerUp1.GetComponentInChildren<TextMeshProUGUI>().text == "Remove")
+        if (powerUp1.GetComponentInChildren<TextMeshProUGUI>().text == "Player X: Remove")
         {
             powerUp1.onClick.AddListener(Remove);
 
 
         }
-        else if (powerUp1.GetComponentInChildren<TextMeshProUGUI>().text == "Skip Turn")
+        else if (powerUp1.GetComponentInChildren<TextMeshProUGUI>().text == "Player X: Skip Turn")
         {
             powerUp1.onClick.AddListener(Skip);
 
@@ -213,12 +213,32 @@ public class GameManager : MonoBehaviour
     {
         isRemoveClicked = true;
         Debug.Log("is remove clicked: " + isRemoveClicked);
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+
+                buttons[i, j].interactable = true;
+                //Debug.Log("Button Name:"+buttons[row,col].name+$"| At Location {row}, {col}");
+
+            }
+        }
 
     }
     private void Skip()
     {
         isSkipClicked = true;
         Debug.Log("is Skip clicked: " + isSkipClicked);
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+
+                buttons[i, j].interactable = true;
+                //Debug.Log("Button Name:"+buttons[row,col].name+$"| At Location {row}, {col}");
+
+            }
+        }
 
     }
 }
