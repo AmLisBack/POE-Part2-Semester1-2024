@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
         int rdPowerUp1 = Random.Range(0, 2);
         if (rdPowerUp1 == 0)
         {
-            powerUp1.GetComponentInChildren<TextMeshProUGUI>().text = "Player X: Remove";
+            powerUp1.GetComponentInChildren<TextMeshProUGUI>().text = "Player X: Replace";
 
         }
         else if (rdPowerUp1 == 1)
@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
         int rdPowerUp2 = Random.Range(0, 2);
         if (rdPowerUp2 == 0)
         {
-            powerUp2.GetComponentInChildren<TextMeshProUGUI>().text = "Player O: Remove";
+            powerUp2.GetComponentInChildren<TextMeshProUGUI>().text = "Player O: Replace";
 
         }
         else if (rdPowerUp2 == 1)
@@ -51,10 +51,10 @@ public class GameManager : MonoBehaviour
         }
 
         //check if power ups are clicked
-        if (powerUp1.GetComponentInChildren<TextMeshProUGUI>().text == "Player X: Remove")
+        if (powerUp1.GetComponentInChildren<TextMeshProUGUI>().text == "Player X: Replace")
         {
-            powerUp1.onClick.AddListener(Remove);
-
+            powerUp1.onClick.AddListener(Replace);
+            
 
         }
         else if (powerUp1.GetComponentInChildren<TextMeshProUGUI>().text == "Player X: Skip Turn")
@@ -110,7 +110,6 @@ public class GameManager : MonoBehaviour
     public void ButtonClicked(int row, int col)
     {
         clickCount++;
-        Debug.Log("clickCount count: " + clickCount);
 
         //when count = 2, buttons are made active
         if (clickCount == 2)
@@ -121,13 +120,26 @@ public class GameManager : MonoBehaviour
         
        
 
-        Debug.Log("Button Clicked at row:" + row + ", " + col);
+        //Debug.Log("Button Clicked at row:" + row + ", " + col);
         buttons[row, col].interactable = false;
         if (p1Turn)
         {
-            buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "X";
-            p1Turn = false;
-            p2Turn = true;
+            if(isRemoveClicked)
+            {
+                buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "X";
+                isRemoveClicked = false;
+                powerUp1.interactable = false;
+                p1Turn = false;
+                p2Turn = true;
+                interactable();
+            }
+            else
+            {
+                buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "X";
+                p1Turn = false;
+                p2Turn = true;
+            }
+            
 
             return;
         }
@@ -139,7 +151,18 @@ public class GameManager : MonoBehaviour
 
         }
 
-        
+        /*
+       if (p1Turn && isRemoveClicked)
+        {
+            p1Turn = false;
+            Debug.Log("p1Turn: " + p1Turn);
+            p2Turn = true;
+            buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "X";
+            isRemoveClicked = false;
+            powerUp1.interactable = false;
+            
+        }
+        */
         
     }
     public void DisplayPlayersTurn()
@@ -209,10 +232,10 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private void Remove()
+    private void Replace()
     {
         isRemoveClicked = true;
-        Debug.Log("is remove clicked: " + isRemoveClicked);
+        Debug.Log("is replace clicked: " + isRemoveClicked);
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
@@ -223,6 +246,9 @@ public class GameManager : MonoBehaviour
 
             }
         }
+
+        
+
 
     }
     private void Skip()
@@ -240,5 +266,21 @@ public class GameManager : MonoBehaviour
             }
         }
 
+    }
+
+    private void interactable()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text == "X" || buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text == "O")
+                {
+                    buttons[i, j].interactable = false;
+                }
+                //Debug.Log("Button Name:"+buttons[row,col].name+$"| At Location {row}, {col}");
+
+            }
+        }
     }
 }
