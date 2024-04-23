@@ -14,9 +14,8 @@ public class GameManager : MonoBehaviour
     public Button powerUp1;
     public Button powerUp2;
     private bool isReplaceClicked = false;
-    private bool isSkipClicked = false;
-   // private bool powerUp1Clicked = false;
-   // private bool powerUp2Clicked = false;
+    private bool isDoubleClicked = false;
+   
     
 
     // Start is called before the first frame update
@@ -35,7 +34,7 @@ public class GameManager : MonoBehaviour
         }
         else if (rdPowerUp1 == 1)
         {
-            powerUp1.GetComponentInChildren<TextMeshProUGUI>().text = "Player X: Skip Turn";
+            powerUp1.GetComponentInChildren<TextMeshProUGUI>().text = "Player X: Double move";
 
         }
         int rdPowerUp2 = Random.Range(0, 2);
@@ -46,7 +45,7 @@ public class GameManager : MonoBehaviour
         }
         else if (rdPowerUp2 == 1)
         {
-            powerUp2.GetComponentInChildren<TextMeshProUGUI>().text = "Player O: Skip Turn";
+            powerUp2.GetComponentInChildren<TextMeshProUGUI>().text = "Player O: Double move";
 
         }
 
@@ -57,7 +56,7 @@ public class GameManager : MonoBehaviour
             
 
         }
-        else if (powerUp1.GetComponentInChildren<TextMeshProUGUI>().text == "Player X: Skip Turn")
+        else if (powerUp1.GetComponentInChildren<TextMeshProUGUI>().text == "Player X: Double move")
         {
             powerUp1.onClick.AddListener(Skip);
 
@@ -68,11 +67,12 @@ public class GameManager : MonoBehaviour
             powerUp2.onClick.AddListener(Replace);
 
         }
-        else if(powerUp2.GetComponentInChildren<TextMeshProUGUI>().text == "Player O: Skip Turn")
+        else if(powerUp2.GetComponentInChildren<TextMeshProUGUI>().text == "Player O: Double move")
         {
             powerUp2.onClick.AddListener(Skip);
         }
 
+        //randomly choosing startinng player
         int randomStart = Random.Range(0, 2);
         if(randomStart == 0 )
         {
@@ -82,6 +82,7 @@ public class GameManager : MonoBehaviour
         {
             p2Turn = true;
         }
+        //initialising board
         for(int i = 0; i < 4; i++)
         {
             for(int j =0; j < 4; j++)
@@ -102,6 +103,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //displaying turns and winners
         string winner;
         winner = ReadBoard();
         DisplayPlayersTurn();
@@ -119,7 +121,7 @@ public class GameManager : MonoBehaviour
 
     public void ButtonClicked(int row, int col)
     {
-        clickCount++;
+        clickCount++;//keeping track f how many times a button is clicked
 
         //when count = 2, buttons are made active
         if (clickCount == 2)
@@ -134,11 +136,11 @@ public class GameManager : MonoBehaviour
         buttons[row, col].interactable = false;
         if (p1Turn)
         {
+           //checks if power up is clicked and executes respective code
             if (isReplaceClicked)
             {
                 buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "X";
                 isReplaceClicked = false;
-                powerUp1.interactable = false;
                 p1Turn = false;
                 p2Turn = true;
                 interactable();
@@ -150,16 +152,25 @@ public class GameManager : MonoBehaviour
                 p2Turn = true;
             }
 
+            if (isDoubleClicked)
+            {
+                powerUp1.interactable = false;
+                buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "X";
+                isDoubleClicked = false;    
+                p1Turn = true;
+                p2Turn = false;
+            }
 
             return;
         }
         if(p2Turn)
         {
+            
             if (isReplaceClicked)
             {
+                powerUp2.interactable = false;
                 buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "O";
                 isReplaceClicked = false;
-                powerUp2.interactable = false;
                 p2Turn = false;
                 p1Turn = true;
                 interactable();
@@ -170,6 +181,15 @@ public class GameManager : MonoBehaviour
                 p2Turn = false;
                 p1Turn = true;
 
+            }
+
+            if (isDoubleClicked)
+            {
+                powerUp2.interactable = false;
+                buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "O";
+                isDoubleClicked = false;
+                p2Turn = true;
+                p1Turn = false;
             }
 
         }
@@ -190,6 +210,7 @@ public class GameManager : MonoBehaviour
     }
     public void DisplayPlayersTurn()
     {
+        //displaying turns
         if(p1Turn)
         {
             currentPlayersTurn.text = "Player X Turn";
@@ -202,6 +223,7 @@ public class GameManager : MonoBehaviour
     private string ReadBoard()
     {
         {
+            //checks for winner or draw and returns a string
             string winner;
             //check horizontal lines
             for (int row = 0; row < 4; row++)
@@ -257,6 +279,15 @@ public class GameManager : MonoBehaviour
 
     private void Replace()
     {
+        ////when button is clicked, it makes all buttons interactable
+        if (p1Turn)
+        {
+            powerUp1.interactable = false;
+        }
+        else if (p2Turn)
+        {
+            powerUp2.interactable = false;
+        }
         isReplaceClicked = true;
         Debug.Log("is replace clicked: " + isReplaceClicked);
         for (int i = 0; i < 4; i++)
@@ -276,13 +307,21 @@ public class GameManager : MonoBehaviour
     }
     private void Skip()
     {
-        isSkipClicked = true;
-        
-
+        //when button is clicked, sets bool to true
+        if (p1Turn)
+        {
+            powerUp1.interactable = false;
+        }
+        else if (p2Turn)
+        {
+            powerUp2.interactable = false;
+        }
+        isDoubleClicked = true;
     }
 
     private void interactable()
     {
+        //when method is called, it loops through array and makes all buttons that contain symbols X or O inactive 
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
