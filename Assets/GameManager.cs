@@ -92,8 +92,9 @@ public class GameManager : MonoBehaviour
                 int row = i;
                 int col = j;
                 buttons[i, j].onClick.AddListener(() => ButtonClicked(row, col));
+                buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text = "";
                 //Debug.Log("Button Name:"+buttons[row,col].name+$"| At Location {row}, {col}");
-                
+
             }
         }
        
@@ -113,6 +114,10 @@ public class GameManager : MonoBehaviour
         }
         else if(winner == "O"){
             currentPlayersTurn.text = "Player O won";
+        }
+        else if(winner == ".")
+        {
+            currentPlayersTurn.text = "Draw";
         }
 
 
@@ -220,6 +225,22 @@ public class GameManager : MonoBehaviour
             currentPlayersTurn.text = "Player O Turn";
         }
     }
+    public int remainingSpaces()
+    {
+        int remainingSpaces = 16;
+        for (int row = 0; row < 4; row++)
+        {
+            for (int col = 0; col < 4; col++)
+            {
+                if (buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text != "")
+                {
+                    remainingSpaces--;
+                }
+            }
+        }
+        return remainingSpaces;
+
+    }
     private string ReadBoard()
     {
         {
@@ -271,7 +292,11 @@ public class GameManager : MonoBehaviour
                 winner = buttons[0, 3].GetComponentInChildren<TextMeshProUGUI>().text;
                 return winner;
             }
-
+            if (remainingSpaces() == 0)
+            {
+                winner = ".";
+                return winner;
+            }
             return " ";
         }
 
