@@ -1,119 +1,137 @@
-using JetBrains.Annotations;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using Unity.VisualScripting;
+using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 public class Mulitplayer : MonoBehaviour
 {
     public Button[,] buttons = new Button[4, 4];
-    public TextMeshProUGUI currentPlayersTurn;//Text at top of screen to display whos turn it is
-    public string playerSymbol = "X";
-    public string computerSymbol = "O";
-    public string currentPlayer;
+    public TextMeshProUGUI currentPlayersTurn;
+    public Char playerSymbol = 'X';
+    public Char computerSymbol = 'O';
+    public Char currentPlayer;
     private bool gameOver = false;
-    // Start is called before the first frame update
+    private bool playerMoved = false;
+    private const int MaxRecursionDepth = 10;
+
     void Start()
     {
-        initialise();
+        Initialise();
         currentPlayer = playerSymbol;
         DisplayPlayersTurn();
-        
     }
-    
-    // Update is called once per frame
-    void Update()
+    public void Update()
     {
-        
+        Debug.Log(currentPlayer.ToString());
     }
 
     public void PlayerInput(int row, int col)
     {
-        if (gameOver)
+        if (gameOver || buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text != "")
             return;
 
-        buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = playerSymbol;
+        buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = playerSymbol + "";
         buttons[row, col].interactable = false;
+        playerMoved = true;
+
         string winner = CheckWin();
         if (winner != "")
         {
             EndGame(winner);
             return;
         }
-        computerTurn();
-        winner = CheckWin();
-        if (winner != "")
-        {
-            EndGame(winner);
-        }
+
+        currentPlayer = computerSymbol;
+        DisplayPlayersTurn();
+
+        ComputerTurn();
     }
-    public void computerTurn()
+
+    public void ComputerTurn()
     {
-        int optimalScore = int.MinValue;//set to min so that any score encountered will be smaller than the best score which helps with correct intialization
-        int[] optimalMove = new int[2];//array to store the row and col of best move for ai
+        currentPlayer = computerSymbol;
+        Debug.Log("Running");
+        if (!playerMoved || gameOver)
+            return;
+
+        Debug.Log("Test");
+        int optimalScore = int.MinValue;
+        int[] optimalMove = new int[2];
+        Debug.Log("Test3");
+        char[,] board = GetBoardState(); // Change to char[,] type
+        Debug.Log("Test4");
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
-                if (buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text == "")
+                if (board[i, j] == '\0') // Check for empty cell
                 {
-                    buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text = computerSymbol;
-                    int currentScore = miniMax(buttons, 0, false);//incrementing depth to keep track of the moves and setting isMaxing to false because it is now the players turn
-                    buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text = "";
 
-                    if(currentScore > optimalScore)
+                    board[i, j] = computerSymbol;
+                    int currentScore = MiniMax(board, 0, false);
+                    board[i, j] = '\0'; // Reset the cell to empty
+                    if (currentScore > optimalScore)
                     {
                         optimalScore = currentScore;
                         optimalMove[0] = i;
                         optimalMove[1] = j;
                     }
+
+                    // Your logic for finding the optimal move
                 }
             }
-            
         }
-        buttons[optimalMove[0], optimalMove[1]].GetComponentInChildren<TextMeshProUGUI>().text = computerSymbol;
+        buttons[optimalMove[0], optimalMove[1]].GetComponentInChildren<TextMeshProUGUI>().text = 'O' + "";
         buttons[optimalMove[0], optimalMove[1]].interactable = false;
-
-
-    }
-    public int miniMax(Button[,] buttons, int depth, bool isMaxing)
-    {
-        string result = CheckWin();
-
-        if (result != "")
+        Debug.Log("Optimal move selected: " + optimalMove[0] + ", " + optimalMove[1]);
+        string winner = CheckWin();
+        if (winner != "")
         {
-            if (result == computerSymbol)
+            EndGame(winner);
+        }
+        else
+        {
+            currentPlayer = playerSymbol;
+            DisplayPlayersTurn();
+        }
+
+        playerMoved = false;
+    }
+
+    public int MiniMax(char[,] board, int depth, bool isMaxing)
+    {
+        board = GetBoardState();
+        char outcome = Winner(board);
+        if (outcome != ' ')
+        {
+            if (outcome == computerSymbol)
             {
-                return 1;
+                return 1 - depth; // subtract depth from the score to determine which victory took the least amount of moves
             }
-            else if (result == playerSymbol)
+            else if (outcome == playerSymbol)
             {
-                return -1;
+                return -1 + depth;
             }
-            else if (result == ".")
+            else
             {
                 return 0;
             }
         }
-        
-           
 
-
-        if (isMaxing) //when it is the computers (maximising player) turn it is trying to minimize the players move by setting optimal score to int.MinValue
+        if (isMaxing) // when it is the computer's (maximising player) turn, it is trying to minimize the player's move by setting optimal score to int.MinValue
         {
             int optimalScore = int.MinValue;
             for (int i = 0; i < 4; i++)
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    if (buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text == "")
+                    if (board[i, j] == ' ')
                     {
-                        buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text = computerSymbol;
-                        int currentScore = miniMax(buttons, depth + 1, false);//incrementing depth to keep track of the moves and setting isMaxing to false because it is now the players turn
-                        buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text = "";
+                        board[i, j] = computerSymbol;
+                        int currentScore = MiniMax(board, depth + 1, false); // incrementing depth to keep track of the moves and setting isMaxing to false because it is now the player's turn
+                        board[i, j] = ' ';
                         optimalScore = Math.Max(currentScore, optimalScore);
                     }
                 }
@@ -127,11 +145,11 @@ public class Mulitplayer : MonoBehaviour
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    if (buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text == "")
+                    if (board[i, j] == ' ')
                     {
-                        buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text = playerSymbol;
-                        int currentScore = miniMax(buttons, depth + 1, true);//incrementing depth to keep track of the moves and setting isMaxing to false because it is now the players turn
-                        buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text = "";
+                        board[i, j] = playerSymbol;
+                        int currentScore = MiniMax(board, depth + 1, true); // incrementing depth to keep track of the moves and set to true because it is now the computer's turn
+                        board[i, j] = ' ';
                         optimalScore = Math.Min(currentScore, optimalScore);
                     }
                 }
@@ -139,110 +157,203 @@ public class Mulitplayer : MonoBehaviour
             return optimalScore;
         }
     }
+
+    public char Winner(char[,] board)
+    {
+        // Check rows
+        for (int i = 0; i < 4; i++)
+        {
+            if (board[i, 0] == board[i, 1] && board[i, 1] == board[i, 2] && board[i, 2] == board[i, 3] && board[i, 0] != ' ')
+            {
+                return board[i, 0];
+            }
+        }
+
+        // Check columns
+        for (int j = 0; j < 4; j++)
+        {
+            if (board[0, j] == board[1, j] && board[1, j] == board[2, j] && board[2, j] == board[3, j] && board[0, j] != ' ')
+            {
+                return board[0, j];
+            }
+        }
+
+        // Check diagonals
+        if (board[0, 0] == board[1, 1] && board[1, 1] == board[2, 2] && board[2, 2] == board[3, 3] && board[0, 0] != ' ')
+        {
+            return board[0, 0];
+        }
+        if (board[0, 3] == board[1, 2] && board[1, 2] == board[2, 1] && board[2, 1] == board[3, 0] && board[0, 3] != ' ')
+        {
+            return board[0, 3];
+        }
+
+        // Check for tie
+        bool isTie = true;
+        foreach (char cell in board)
+        {
+            if (cell == ' ')
+            {
+                isTie = false;
+                break;
+            }
+        }
+        if (isTie)
+        {
+            return 'T';
+        }
+
+        return ' '; // No winner yet
+    }
+
     public void DisplayPlayersTurn()
     {
-        //displaying turns
         if (currentPlayer == playerSymbol)
         {
             currentPlayersTurn.text = "Player";
         }
         else
+        {
             currentPlayersTurn.text = "Computer";
+        }
     }
+
     public string CheckWin()
     {
+        string winner = "";
+
+        for (int row = 0; row < 4; row++)
         {
-            //checks for winner or draw and returns a string
-            string winner;
-            //check horizontal lines
-            for (int row = 0; row < 4; row++)
+            if (buttons[row, 0].GetComponentInChildren<TextMeshProUGUI>().text == buttons[row, 1].GetComponentInChildren<TextMeshProUGUI>().text &&
+                buttons[row, 1].GetComponentInChildren<TextMeshProUGUI>().text == buttons[row, 2].GetComponentInChildren<TextMeshProUGUI>().text &&
+                buttons[row, 2].GetComponentInChildren<TextMeshProUGUI>().text == buttons[row, 3].GetComponentInChildren<TextMeshProUGUI>().text &&
+                buttons[row, 0].GetComponentInChildren<TextMeshProUGUI>().text != "")
             {
-                if (buttons[row, 0].GetComponentInChildren<TextMeshProUGUI>().text == buttons[row, 1].GetComponentInChildren<TextMeshProUGUI>().text &&
-                    buttons[row, 1].GetComponentInChildren<TextMeshProUGUI>().text == buttons[row, 2].GetComponentInChildren<TextMeshProUGUI>().text &&
-                    buttons[row, 2].GetComponentInChildren<TextMeshProUGUI>().text == buttons[row, 3].GetComponentInChildren<TextMeshProUGUI>().text &&
-                    buttons[row, 0].GetComponentInChildren<TextMeshProUGUI>().text != "")
-                {
-                    winner = buttons[row, 0].GetComponentInChildren<TextMeshProUGUI>().text;
-
-                    return winner;
-                }
-            }
-
-            //check vertical lines
-            for (int col = 0; col < 4; col++)
-            {
-                if (buttons[0, col].GetComponentInChildren<TextMeshProUGUI>().text == buttons[1, col].GetComponentInChildren<TextMeshProUGUI>().text &&
-                    buttons[1, col].GetComponentInChildren<TextMeshProUGUI>().text == buttons[2, col].GetComponentInChildren<TextMeshProUGUI>().text &&
-                    buttons[2, col].GetComponentInChildren<TextMeshProUGUI>().text == buttons[3, col].GetComponentInChildren<TextMeshProUGUI>().text &&
-                    buttons[0, col].GetComponentInChildren<TextMeshProUGUI>().text != "")
-                {
-                    winner = buttons[0, col].GetComponentInChildren<TextMeshProUGUI>().text;
-                    return winner;
-                }
-            }
-
-            //top-left to bottom-right
-            if (buttons[0, 0].GetComponentInChildren<TextMeshProUGUI>().text == buttons[1, 1].GetComponentInChildren<TextMeshProUGUI>().text &&
-                buttons[1, 1].GetComponentInChildren<TextMeshProUGUI>().text == buttons[2, 2].GetComponentInChildren<TextMeshProUGUI>().text &&
-                buttons[2, 2].GetComponentInChildren<TextMeshProUGUI>().text == buttons[3, 3].GetComponentInChildren<TextMeshProUGUI>().text &&
-                buttons[0, 0].GetComponentInChildren<TextMeshProUGUI>().text != "")
-            {
-                winner = buttons[0, 0].GetComponentInChildren<TextMeshProUGUI>().text;
+                winner = buttons[row, 0].GetComponentInChildren<TextMeshProUGUI>().text;
                 return winner;
             }
-
-            //top-right to bottom-left
-            if (buttons[0, 3].GetComponentInChildren<TextMeshProUGUI>().text == buttons[1, 2].GetComponentInChildren<TextMeshProUGUI>().text &&
-                buttons[1, 2].GetComponentInChildren<TextMeshProUGUI>().text == buttons[2, 1].GetComponentInChildren<TextMeshProUGUI>().text &&
-                buttons[2, 1].GetComponentInChildren<TextMeshProUGUI>().text == buttons[3, 0].GetComponentInChildren<TextMeshProUGUI>().text &&
-                buttons[0, 3].GetComponentInChildren<TextMeshProUGUI>().text != "")
-            {
-                winner = buttons[0, 3].GetComponentInChildren<TextMeshProUGUI>().text;
-                return winner;
-            }
-            if (remainingSpaces() == 0)
-            {
-                winner = ".";
-                return winner;
-            }
-            return " ";
         }
 
-    }
+        for (int col = 0; col < 4; col++)
+        {
+            if (buttons[0, col].GetComponentInChildren<TextMeshProUGUI>().text == buttons[1, col].GetComponentInChildren<TextMeshProUGUI>().text &&
+                buttons[1, col].GetComponentInChildren<TextMeshProUGUI>().text == buttons[2, col].GetComponentInChildren<TextMeshProUGUI>().text &&
+                buttons[2, col].GetComponentInChildren<TextMeshProUGUI>().text == buttons[3, col].GetComponentInChildren<TextMeshProUGUI>().text &&
+                buttons[0, col].GetComponentInChildren<TextMeshProUGUI>().text != "")
+            {
+                winner = buttons[0, col].GetComponentInChildren<TextMeshProUGUI>().text;
+                return winner;
+            }
+        }
 
-    private void interactable()
+        if (buttons[0, 0].GetComponentInChildren<TextMeshProUGUI>().text == buttons[1, 1].GetComponentInChildren<TextMeshProUGUI>().text &&
+            buttons[1, 1].GetComponentInChildren<TextMeshProUGUI>().text == buttons[2, 2].GetComponentInChildren<TextMeshProUGUI>().text &&
+            buttons[2, 2].GetComponentInChildren<TextMeshProUGUI>().text == buttons[3, 3].GetComponentInChildren<TextMeshProUGUI>().text &&
+            buttons[0, 0].GetComponentInChildren<TextMeshProUGUI>().text != "")
+        {
+            winner = buttons[0, 0].GetComponentInChildren<TextMeshProUGUI>().text;
+            return winner;
+        }
+
+        if (buttons[0, 3].GetComponentInChildren<TextMeshProUGUI>().text == buttons[1, 2].GetComponentInChildren<TextMeshProUGUI>().text &&
+            buttons[1, 2].GetComponentInChildren<TextMeshProUGUI>().text == buttons[2, 1].GetComponentInChildren<TextMeshProUGUI>().text &&
+            buttons[2, 1].GetComponentInChildren<TextMeshProUGUI>().text == buttons[3, 0].GetComponentInChildren<TextMeshProUGUI>().text &&
+            buttons[0, 3].GetComponentInChildren<TextMeshProUGUI>().text != "")
+        {
+            winner = buttons[0, 3].GetComponentInChildren<TextMeshProUGUI>().text;
+            return winner;
+        }
+
+        if (remainingSpaces() == 0)
+        {
+            winner = ".";
+            return winner;
+        }
+
+        return "";
+    }
+    
+    public string CheckWin(string[,] board)
     {
-        //when method is called, it loops through array and makes all buttons that contain symbols X or O inactive 
+        for (int row = 0; row < 4; row++)
+        {
+            if (board[row, 0] != "" &&
+                board[row, 0] == board[row, 1] &&
+                board[row, 1] == board[row, 2] &&
+                board[row, 2] == board[row, 3])
+            {
+                return board[row, 0];
+            }
+        }
+
+        for (int col = 0; col < 4; col++)
+        {
+            if (board[0, col] != "" &&
+                board[0, col] == board[1, col] &&
+                board[1, col] == board[2, col] &&
+                board[2, col] == board[3, col])
+            {
+                return board[0, col];
+            }
+        }
+
+        if (board[0, 0] != "" &&
+            board[0, 0] == board[1, 1] &&
+            board[1, 1] == board[2, 2] &&
+            board[2, 2] == board[3, 3])
+        {
+            return board[0, 0];
+        }
+
+        if (board[0, 3] != "" &&
+            board[0, 3] == board[1, 2] &&
+            board[1, 2] == board[2, 1] &&
+            board[2, 1] == board[3, 0])
+        {
+            return board[0, 3];
+        }
+
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
-                if (buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text == "X" || buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text == "O")
+                if (board[i, j] == "")
                 {
-                    buttons[i, j].interactable = false;
+                    return "";
                 }
-                //Debug.Log("Button Name:"+buttons[row,col].name+$"| At Location {row}, {col}");
-
             }
         }
+
+        return ".";
     }
-    public int remainingSpaces()
+
+    public Char[,] GetBoardState()
     {
-        int remainingSpaces = 16;
-        for (int row = 0; row < 4; row++)
+        char[,] board = new char[4, 4];
+
+        for (int i = 0; i < 4; i++)
         {
-            for (int col = 0; col < 4; col++)
+            for (int j = 0; j < 4; j++)
             {
-                if (buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text != "")
+                string buttonText = buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text;
+
+                // If the buttonText contains only one character, convert it to char
+                if (buttonText.Length == 1)
                 {
-                    remainingSpaces--;
+                    board[i, j] = buttonText[0];
+                }
+                else
+                {
+                    // Handle the case when the buttonText is empty or has more than one character
+                    board[i, j] = '\0'; // or any default value you prefer for empty strings
                 }
             }
         }
-        return remainingSpaces;
 
+        return board;
     }
-    private void initialise()
+
+    private void Initialise()
     {
         for (int i = 0; i < 4; i++)
         {
@@ -252,28 +363,63 @@ public class Mulitplayer : MonoBehaviour
                 buttons[i, j] = GameObject.Find(buttonName).GetComponent<Button>();
                 int row = i;
                 int col = j;
-                buttons[i, j].onClick.AddListener(() => PlayerInput(row, col));
+                buttons[i, j].onClick.AddListener(() => ButtonClicked(row, col));
                 buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text = "";
-                buttons[i, j].interactable |= true;
-                //Debug.Log("Button Name:"+buttons[row,col].name+$"| At Location {row}, {col}");
-
             }
         }
     }
-    public void EndGame(string winner)
+
+    public void ButtonClicked(int row, int col)
     {
-        gameOver = true;
-        if (winner == playerSymbol)
+        if (buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text == "")
         {
-            currentPlayersTurn.text = "Player Wins";
-        }
-        else if (winner == computerSymbol)
-        {
-            currentPlayersTurn.text = "Computer Wins";
-        }
-        else if(winner == ".")
-        {
-            currentPlayersTurn.text = "Draw";
+            if (currentPlayer == playerSymbol)
+            {
+                playerMoved = true;//true - When Min max works
+                currentPlayer = computerSymbol;
+            }
+            else if (currentPlayer == computerSymbol)
+            {
+                playerMoved = false; //False
+                currentPlayer = playerSymbol;
+            }
+            buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = currentPlayer + "";
+            buttons[row, col].interactable = false;
+            currentPlayer = currentPlayer == playerSymbol ? computerSymbol : playerSymbol;
+            Debug.Log(currentPlayer);
+            DisplayPlayersTurn();
+            ComputerTurn();
+            
         }
     }
+
+    private void EndGame(string winner)
+    {
+        gameOver = true;
+        if (winner == ".")
+        {
+            currentPlayersTurn.text = "Draw!";
+        }
+        else
+        {
+            currentPlayersTurn.text = winner + " wins!";
+        }
+    }
+
+    private int remainingSpaces()
+    {
+        int count = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text == "")
+                {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
 }
+
