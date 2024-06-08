@@ -9,9 +9,9 @@ public class Mulitplayer : MonoBehaviour
 {
     public Button[,] buttons = new Button[4, 4];
     public TextMeshProUGUI currentPlayersTurn;
-    public Char playerSymbol = 'X';
-    public Char computerSymbol = 'O';
-    public Char currentPlayer;
+    private Char playerSymbol = 'X';
+    private Char computerSymbol = 'O';
+    private Char currentPlayer;
     private bool gameOver = false;
     private bool playerMoved = false;
     private const int MaxRecursionDepth = 10;
@@ -51,6 +51,7 @@ public class Mulitplayer : MonoBehaviour
 
     public void ComputerTurn()
     {
+        playerMoved = true;
         currentPlayer = computerSymbol;
         Debug.Log("Running");
         if (!playerMoved || gameOver)
@@ -83,7 +84,7 @@ public class Mulitplayer : MonoBehaviour
                 }
             }
         }
-        buttons[optimalMove[0], optimalMove[1]].GetComponentInChildren<TextMeshProUGUI>().text = 'O' + "";
+        buttons[optimalMove[0], optimalMove[1]].GetComponentInChildren<TextMeshProUGUI>().text = computerSymbol + "";
         buttons[optimalMove[0], optimalMove[1]].interactable = false;
         Debug.Log("Optimal move selected: " + optimalMove[0] + ", " + optimalMove[1]);
         string winner = CheckWin();
@@ -378,12 +379,8 @@ public class Mulitplayer : MonoBehaviour
                 playerMoved = true;//true - When Min max works
                 currentPlayer = computerSymbol;
             }
-            else if (currentPlayer == computerSymbol)
-            {
-                playerMoved = false; //False
-                currentPlayer = playerSymbol;
-            }
-            buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = currentPlayer + "";
+            
+            buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = playerSymbol + "";
             buttons[row, col].interactable = false;
             currentPlayer = currentPlayer == playerSymbol ? computerSymbol : playerSymbol;
             Debug.Log(currentPlayer);

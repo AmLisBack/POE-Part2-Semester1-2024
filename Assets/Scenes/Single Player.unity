@@ -2538,9 +2538,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentPlayersTurn: {fileID: 2119883846}
-  playerSymbol: X
-  computerSymbol: O
-  currentPlayer: 
 --- !u!1 &1003145035
 GameObject:
   m_ObjectHideFlags: 0
