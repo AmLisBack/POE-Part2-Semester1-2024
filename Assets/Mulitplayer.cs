@@ -105,13 +105,13 @@ public class Mulitplayer : MonoBehaviour
     {
         board = GetBoardState();
         char outcome = Winner(board);
-        if (outcome != ' ')
+        if (outcome != '\0')
         {
-            if (outcome == computerSymbol)
+            if (outcome == 'O')
             {
                 return 1 - depth; // subtract depth from the score to determine which victory took the least amount of moves
             }
-            else if (outcome == playerSymbol)
+            else if (outcome == 'X')
             {
                 return -1 + depth;
             }
@@ -164,7 +164,7 @@ public class Mulitplayer : MonoBehaviour
         // Check rows
         for (int i = 0; i < 4; i++)
         {
-            if (board[i, 0] == board[i, 1] && board[i, 1] == board[i, 2] && board[i, 2] == board[i, 3] && board[i, 0] != ' ')
+            if (board[i, 0] == board[i, 1] && board[i, 1] == board[i, 2] && board[i, 2] == board[i, 3] && board[i, 0] != '\0')
             {
                 return board[i, 0];
             }
@@ -173,18 +173,18 @@ public class Mulitplayer : MonoBehaviour
         // Check columns
         for (int j = 0; j < 4; j++)
         {
-            if (board[0, j] == board[1, j] && board[1, j] == board[2, j] && board[2, j] == board[3, j] && board[0, j] != ' ')
+            if (board[0, j] == board[1, j] && board[1, j] == board[2, j] && board[2, j] == board[3, j] && board[0, j] != '\0')
             {
                 return board[0, j];
             }
         }
 
         // Check diagonals
-        if (board[0, 0] == board[1, 1] && board[1, 1] == board[2, 2] && board[2, 2] == board[3, 3] && board[0, 0] != ' ')
+        if (board[0, 0] == board[1, 1] && board[1, 1] == board[2, 2] && board[2, 2] == board[3, 3] && board[0, 0] != '\0')
         {
             return board[0, 0];
         }
-        if (board[0, 3] == board[1, 2] && board[1, 2] == board[2, 1] && board[2, 1] == board[3, 0] && board[0, 3] != ' ')
+        if (board[0, 3] == board[1, 2] && board[1, 2] == board[2, 1] && board[2, 1] == board[3, 0] && board[0, 3] != '\0')
         {
             return board[0, 3];
         }
@@ -193,7 +193,7 @@ public class Mulitplayer : MonoBehaviour
         bool isTie = true;
         foreach (char cell in board)
         {
-            if (cell == ' ')
+            if (cell == '\0')
             {
                 isTie = false;
                 break;
@@ -204,7 +204,7 @@ public class Mulitplayer : MonoBehaviour
             return 'T';
         }
 
-        return ' '; // No winner yet
+        return '\0'; // No winner yet
     }
 
     public void DisplayPlayersTurn()
@@ -274,11 +274,11 @@ public class Mulitplayer : MonoBehaviour
         return "";
     }
     
-    public string CheckWin(string[,] board)
+    public char CheckWin(char[,] board)
     {
         for (int row = 0; row < 4; row++)
         {
-            if (board[row, 0] != "" &&
+            if (board[row, 0] != '\0' &&
                 board[row, 0] == board[row, 1] &&
                 board[row, 1] == board[row, 2] &&
                 board[row, 2] == board[row, 3])
@@ -289,7 +289,7 @@ public class Mulitplayer : MonoBehaviour
 
         for (int col = 0; col < 4; col++)
         {
-            if (board[0, col] != "" &&
+            if (board[0, col] != '\0' &&
                 board[0, col] == board[1, col] &&
                 board[1, col] == board[2, col] &&
                 board[2, col] == board[3, col])
@@ -298,7 +298,7 @@ public class Mulitplayer : MonoBehaviour
             }
         }
 
-        if (board[0, 0] != "" &&
+        if (board[0, 0] != '\0' &&
             board[0, 0] == board[1, 1] &&
             board[1, 1] == board[2, 2] &&
             board[2, 2] == board[3, 3])
@@ -306,7 +306,7 @@ public class Mulitplayer : MonoBehaviour
             return board[0, 0];
         }
 
-        if (board[0, 3] != "" &&
+        if (board[0, 3] != '\0' &&
             board[0, 3] == board[1, 2] &&
             board[1, 2] == board[2, 1] &&
             board[2, 1] == board[3, 0])
@@ -318,14 +318,14 @@ public class Mulitplayer : MonoBehaviour
         {
             for (int j = 0; j < 4; j++)
             {
-                if (board[i, j] == "")
+                if (board[i, j] == '\0')
                 {
-                    return "";
+                    return '\0';
                 }
             }
         }
 
-        return ".";
+        return '.';
     }
 
     public Char[,] GetBoardState()
