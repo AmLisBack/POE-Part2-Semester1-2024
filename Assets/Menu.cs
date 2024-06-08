@@ -13,5 +13,9 @@ public class Menu : MonoBehaviour
     {
         SceneManager.LoadScene("Multiplayer");
     }
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("Menu");
+    }
 
 }
