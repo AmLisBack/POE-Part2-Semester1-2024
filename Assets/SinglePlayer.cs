@@ -5,16 +5,24 @@ using Unity.VisualScripting;
 using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 
-public class Mulitplayer : MonoBehaviour
+public class SinglePlayer : MonoBehaviour
 {
     public Button[,] buttons = new Button[4, 4];
     public TextMeshProUGUI currentPlayersTurn;
+    public Button powerUp1;
+    public Button powerUp2;
     private Char playerSymbol = 'X';
     private Char computerSymbol = 'O';
     private Char currentPlayer;
     private bool gameOver = false;
     private bool playerMoved = false;
+    public bool p1Turn = false; //X
+    public bool p2Turn = false; //O
     private const int MaxRecursionDepth = 10;
+    public int clickCount;
+    private bool isReplaceClicked = false;
+    private bool isDoubleClicked = false;
+   
 
     void Start()
     {
@@ -417,6 +425,48 @@ public class Mulitplayer : MonoBehaviour
             }
         }
         return count;
+    }
+
+    private void Replace()
+    {
+        ////when button is clicked, it makes all buttons interactable
+        if (p1Turn)
+        {
+            powerUp1.interactable = false;
+        }
+        else if (p2Turn)
+        {
+            powerUp2.interactable = false;
+        }
+        isReplaceClicked = true;
+        Debug.Log("is replace clicked: " + isReplaceClicked);
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+
+                buttons[i, j].interactable = true;
+                //Debug.Log("Button Name:"+buttons[row,col].name+$"| At Location {row}, {col}");
+
+            }
+        }
+
+
+
+
+    }
+    private void Skip()
+    {
+        //when button is clicked, sets bool to true
+        if (p1Turn)
+        {
+            powerUp1.interactable = false;
+        }
+        else if (p2Turn)
+        {
+            powerUp2.interactable = false;
+        }
+        isDoubleClicked = true;
     }
 }
 
