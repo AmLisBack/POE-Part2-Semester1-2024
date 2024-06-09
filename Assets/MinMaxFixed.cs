@@ -7,8 +7,13 @@ public class MinMaxFixed : MonoBehaviour
 {
     public TextMeshProUGUI currentPlayersTurn;
     public Button[,] buttons = new Button[4, 4];
+    public Button powerUp1;
+    public Button powerUp2;
     private Player[,] board = new Player[4, 4];
     private Player currentPlayer = Player.X;
+    public int clickCount;
+    private bool isReplaceClicked = false;
+    private bool isDoubleClicked = false;
 
     public enum Player { None, X, O }
 
@@ -48,6 +53,7 @@ public class MinMaxFixed : MonoBehaviour
     void ButtonClicked(int row, int col)
     {
         DisplayPlayersTurn();
+       
         if (MakeMove(row, col, Player.X))
         {
             buttons[row, col].interactable = false;
@@ -282,4 +288,5 @@ public class MinMaxFixed : MonoBehaviour
         
         
     }
+   
 }

@@ -2539,8 +2539,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentPlayersTurn: {fileID: 2119883846}
-  powerUp1: {fileID: 0}
-  powerUp2: {fileID: 0}
+  powerUp1: {fileID: 1383141884}
+  powerUp2: {fileID: 1946288255}
   p1Turn: 0
   p2Turn: 0
   clickCount: 0

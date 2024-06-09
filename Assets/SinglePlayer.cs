@@ -26,36 +26,17 @@ public class SinglePlayer : MonoBehaviour
 
     void Start()
     {
+
         Initialise();
         currentPlayer = playerSymbol;
         DisplayPlayersTurn();
+        PowerUps();
     }
     public void Update()
     {
         Debug.Log(currentPlayer.ToString());
     }
 
-    public void PlayerInput(int row, int col)
-    {
-        if (gameOver || buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text != "")
-            return;
-
-        buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = playerSymbol + "";
-        buttons[row, col].interactable = false;
-        playerMoved = true;
-
-        string winner = CheckWin();
-        if (winner != "")
-        {
-            EndGame(winner);
-            return;
-        }
-
-        currentPlayer = computerSymbol;
-        DisplayPlayersTurn();
-
-        ComputerTurn();
-    }
 
     public void ComputerTurn()
     {
@@ -380,11 +361,34 @@ public class SinglePlayer : MonoBehaviour
 
     public void ButtonClicked(int row, int col)
     {
+        clickCount++;//keeping track f how many times a button is clicked
+
+        //when count = 2, buttons are made active
+        if (clickCount == 2)
+        {
+            powerUp1.gameObject.SetActive(true);
+            powerUp2.gameObject.SetActive(true);
+        }
+        if (isReplaceClicked)
+        {
+            buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "X";
+            isReplaceClicked = false;
+            interactable();
+        }
+        if (isDoubleClicked)
+        {
+            powerUp1.interactable = false;
+            buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "X";
+            isDoubleClicked = false;
+            interactable();
+        }
         if (buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text == "")
         {
+            Debug.Log("is powerup pressed");
             if (currentPlayer == playerSymbol)
             {
                 playerMoved = true;//true - When Min max works
+               
                 currentPlayer = computerSymbol;
             }
             
@@ -430,14 +434,6 @@ public class SinglePlayer : MonoBehaviour
     private void Replace()
     {
         ////when button is clicked, it makes all buttons interactable
-        if (p1Turn)
-        {
-            powerUp1.interactable = false;
-        }
-        else if (p2Turn)
-        {
-            powerUp2.interactable = false;
-        }
         isReplaceClicked = true;
         Debug.Log("is replace clicked: " + isReplaceClicked);
         for (int i = 0; i < 4; i++)
@@ -511,15 +507,24 @@ public class SinglePlayer : MonoBehaviour
     private void Skip()
     {
         //when button is clicked, sets bool to true
-        if (p1Turn)
-        {
-            powerUp1.interactable = false;
-        }
-        else if (p2Turn)
-        {
-            powerUp2.interactable = false;
-        }
+
         isDoubleClicked = true;
+    }
+     private void interactable()
+    {
+        //when method is called, it loops through array and makes all buttons that contain symbols X or O inactive 
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text == "X" || buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text == "O")
+                {
+                    buttons[i, j].interactable = false;
+                }
+                //Debug.Log("Button Name:"+buttons[row,col].name+$"| At Location {row}, {col}");
+
+            }
+        }
     }
 }
 
