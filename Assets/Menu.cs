@@ -5,9 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
-    public void SinglePlayerScene()
+    public void DifficultyScene()
     {
-        SceneManager.LoadScene("Single Player");
+        SceneManager.LoadScene("Difficulty");
     }
     public void MultiplayerScene()
     {
@@ -18,4 +18,16 @@ public class Menu : MonoBehaviour
         SceneManager.LoadScene("Menu");
     }
 
+    public void Easy()
+    {
+        SceneManager.LoadScene("Single Player");
+    }
+    public void Medium()
+    {
+        SceneManager.LoadScene("Medium");
+    }
+    public void Hard()
+    {
+        SceneManager.LoadScene("Hard");
+    }
 }
