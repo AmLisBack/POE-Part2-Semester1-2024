@@ -2417,6 +2417,8 @@ GameObject:
   - component: {fileID: 992300478}
   - component: {fileID: 992300477}
   - component: {fileID: 992300481}
+  - component: {fileID: 992300482}
+  - component: {fileID: 992300483}
   m_Layer: 5
   m_Name: UI
   m_TagString: Untagged
@@ -2533,9 +2535,40 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 992300476}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3d9b0519ad7e71f48af57b3905cf05db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentPlayersTurn: {fileID: 2119883846}
+  powerUp1: {fileID: 0}
+  powerUp2: {fileID: 0}
+  p1Turn: 0
+  p2Turn: 0
+  clickCount: 0
+--- !u!114 &992300482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992300476}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 501a2845240704f40a99f3d314940ff3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentPlayersTurn: {fileID: 2119883846}
+--- !u!114 &992300483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 992300476}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 464c23d8463a4b54d8c78d8aabadb5a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   currentPlayersTurn: {fileID: 2119883846}
