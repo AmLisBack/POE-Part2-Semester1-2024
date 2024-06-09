@@ -455,6 +455,59 @@ public class SinglePlayer : MonoBehaviour
 
 
     }
+
+    public void PowerUps()
+    {
+        powerUp1.gameObject.SetActive(false);
+        powerUp2.gameObject.SetActive(false);
+
+        //the 2 power up buttons' text are randomly changed to either Remove or Skip Turn
+        int rdPowerUp1 = UnityEngine.Random.Range(0, 2);
+        if (rdPowerUp1 == 0)
+        {
+            powerUp1.GetComponentInChildren<TextMeshProUGUI>().text = "Player X: Replace";
+
+        }
+        else if (rdPowerUp1 == 1)
+        {
+            powerUp1.GetComponentInChildren<TextMeshProUGUI>().text = "Player X: Double move";
+
+        }
+        int rdPowerUp2 = UnityEngine.Random.Range(0, 2);
+        if (rdPowerUp2 == 0)
+        {
+            powerUp2.GetComponentInChildren<TextMeshProUGUI>().text = "Player O: Replace";
+
+        }
+        else if (rdPowerUp2 == 1)
+        {
+            powerUp2.GetComponentInChildren<TextMeshProUGUI>().text = "Player O: Double move";
+
+        }
+
+        //check if power ups are clicked
+        if (powerUp1.GetComponentInChildren<TextMeshProUGUI>().text == "Player X: Replace")
+        {
+            powerUp1.onClick.AddListener(Replace);
+
+
+        }
+        else if (powerUp1.GetComponentInChildren<TextMeshProUGUI>().text == "Player X: Double move")
+        {
+            powerUp1.onClick.AddListener(Skip);
+
+        }
+
+        if (powerUp2.GetComponentInChildren<TextMeshProUGUI>().text == "Player O: Replace")
+        {
+            powerUp2.onClick.AddListener(Replace);
+
+        }
+        else if (powerUp2.GetComponentInChildren<TextMeshProUGUI>().text == "Player O: Double move")
+        {
+            powerUp2.onClick.AddListener(Skip);
+        }
+    }
     private void Skip()
     {
         //when button is clicked, sets bool to true

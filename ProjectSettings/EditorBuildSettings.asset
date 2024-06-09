@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Multiplayer.unity
     guid: 132a0b41f7ec3834fa56743e5c96f905
+  - enabled: 1
+    path: Assets/Scenes/Difficulty.unity
+    guid: ae9214b7af2ee3141bda5ccf8edb2089
   m_configObjects: {}
