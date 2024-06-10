@@ -473,12 +473,13 @@ public class SinglePlayer : MonoBehaviour
         if (rdPowerUp2 == 0)
         {
             powerUp2.GetComponentInChildren<TextMeshProUGUI>().text = "Player O: Replace";
+            powerUp2.interactable = false;
 
         }
         else if (rdPowerUp2 == 1)
         {
             powerUp2.GetComponentInChildren<TextMeshProUGUI>().text = "Player O: Double move";
-
+            powerUp2.interactable = false;
         }
 
         //check if power ups are clicked
