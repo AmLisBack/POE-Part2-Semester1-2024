@@ -50,18 +50,18 @@ public class SinglePlayer : MonoBehaviour
         int optimalScore = int.MinValue;
         int[] optimalMove = new int[2];
         Debug.Log("Test3");
-        char[,] board = GetBoardState(); // Change to char[,] type
+        char[,] board = GetBoardState(); 
         Debug.Log("Test4");
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
             {
-                if (board[i, j] == '\0') // Check for empty cell
+                if (board[i, j] == '\0') //Check for empty cell
                 {
 
                     board[i, j] = computerSymbol;
                     int currentScore = MiniMax(board, 0, false);
-                    board[i, j] = '\0'; // Reset the cell to empty
+                    board[i, j] = '\0'; //Reset the cell to empty
                     if (currentScore > optimalScore)
                     {
                         optimalScore = currentScore;
@@ -69,7 +69,7 @@ public class SinglePlayer : MonoBehaviour
                         optimalMove[1] = j;
                     }
 
-                    // Your logic for finding the optimal move
+                   
                 }
             }
         }
@@ -98,7 +98,7 @@ public class SinglePlayer : MonoBehaviour
         {
             if (outcome == 'O')
             {
-                return 1 - depth; // subtract depth from the score to determine which victory took the least amount of moves
+                return 1 - depth; //subtract depth from the score to determine which victory took the least amount of moves
             }
             else if (outcome == 'X')
             {
@@ -327,15 +327,15 @@ public class SinglePlayer : MonoBehaviour
             {
                 string buttonText = buttons[i, j].GetComponentInChildren<TextMeshProUGUI>().text;
 
-                // If the buttonText contains only one character, convert it to char
+                
                 if (buttonText.Length == 1)
                 {
                     board[i, j] = buttonText[0];
                 }
                 else
                 {
-                    // Handle the case when the buttonText is empty or has more than one character
-                    board[i, j] = '\0'; // or any default value you prefer for empty strings
+                    
+                    board[i, j] = '\0'; 
                 }
             }
         }

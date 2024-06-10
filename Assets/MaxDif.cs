@@ -45,7 +45,7 @@ public class MaxDif : MonoBehaviour
         }
     }
 
-    void ButtonClicked(int row, int col)
+    void ButtonClicked(int row, int col) //After the player clicks a button the computer moves after
     {
         DisplayPlayersTurn();
         if (MakeMove(row, col, Player.X))
@@ -53,7 +53,7 @@ public class MaxDif : MonoBehaviour
             buttons[row, col].interactable = false;
             buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "X";
 
-            // Calculate and display utility scores for the computer's next move
+            //display utility scores for the computer's next move
             //DisplayUtilityScoresForNextMove();
             
             currentPlayer = Player.O;
@@ -82,7 +82,7 @@ public class MaxDif : MonoBehaviour
         List<(int, int)> emptySquares = GetEmptySquares();
         foreach (var (r, c) in emptySquares)
         {
-            float utilityScore = CalculateUtilityForCell(r, c, Player.X); // Calculate utility for the player's move
+            float utilityScore = CalculateUtilityForCell(r, c, Player.X); //calculate utility for the player's move
             buttons[r, c].GetComponentInChildren<TextMeshProUGUI>().text = utilityScore.ToString("F2");
         }
     }
@@ -153,7 +153,7 @@ public class MaxDif : MonoBehaviour
         return (float)count / 4;
     }
 
-    void AIMove()
+    void AIMove() //Computer move
     {
         List<(int, int)> emptySquares = GetEmptySquares();
         float maxUtility = -1;
@@ -169,8 +169,8 @@ public class MaxDif : MonoBehaviour
             }
         }
         bool blockPlayer = false;
-        
-            foreach (var (r, c) in emptySquares)
+        //decide whether to block the player's winning move based on the player's utility score
+        foreach (var (r, c) in emptySquares)
             {
                 float playerUtilityScore = CalculateUtilityForCell(r, c, Player.X);
                 Debug.Log(playerUtilityScore);
@@ -180,13 +180,13 @@ public class MaxDif : MonoBehaviour
                 }
             }
         
-            // Decide whether to block the player's winning move based on the player's utility score
+            
             
 
-        // Make move decision
+        //make move decision
         if (blockPlayer)
         {
-            // Block player's winning move
+            
             foreach (var (r, c) in emptySquares)
             {
                 if (CalculateUtilityForCell(r, c, Player.X) >= 0.09f)
@@ -200,7 +200,7 @@ public class MaxDif : MonoBehaviour
         }
         else
         {
-            // Make the predicted best move
+            //Make the predicted best move
             if (bestMove.Item1 != -1 && bestMove.Item2 != -1)
             {
                 MakeMove(bestMove.Item1, bestMove.Item2, Player.O);
@@ -244,7 +244,7 @@ public class MaxDif : MonoBehaviour
         return count;
     }
 
-    public string CheckWin()
+    public string CheckWin()//Check buttons for winning states
     {
         string winner = "";
 

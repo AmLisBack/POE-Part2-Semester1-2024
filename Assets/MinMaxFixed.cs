@@ -59,7 +59,7 @@ public class MinMaxFixed : MonoBehaviour
             buttons[row, col].interactable = false;
             buttons[row, col].GetComponentInChildren<TextMeshProUGUI>().text = "X";
 
-            // Calculate and display utility scores for the computer's next move
+            //display utility scores for the computer's next move
             //DisplayUtilityScoresForNextMove();
 
             currentPlayer = Player.O;
